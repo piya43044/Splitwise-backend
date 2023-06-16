@@ -37,20 +37,21 @@ namespace EMS.Web
 
 
 
-            // Add CORS policies
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
+                // Add CORS policies
+                builder.Services.AddCors(options =>
                 {
-                    policy.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    options.AddPolicy("AllowAll", policy =>
+                    {
+                        policy.WithOrigins("https://localhost:4200", "http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
                 });
-            });
 
 
 
-            await builder.AddApplicationAsync<EMSWebModule>();
+                await builder.AddApplicationAsync<EMSWebModule>();
             var app = builder.Build();
 
 

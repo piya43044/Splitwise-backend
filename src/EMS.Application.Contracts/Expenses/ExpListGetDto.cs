@@ -7,6 +7,7 @@ namespace EMS.Expenses
 {
     public class ExpListGetDto
     {
+        public Guid ExpenseId { get; set; }
         public Guid? PaymentId { get; set; }
         public Guid ?OwnedBy { get; set; }
         public decimal? Amount { get; set; }

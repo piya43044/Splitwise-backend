@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -16,6 +17,7 @@ using Volo.Abp.Guids;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
+using static Volo.Abp.Identity.IdentityPermissions;
 using static Volo.Abp.Identity.Settings.IdentitySettingNames;
 using static Volo.Abp.UI.Navigation.DefaultMenuNames.Application;
 
@@ -36,8 +38,9 @@ namespace EMS.Friends
             _friendRepository = friendRepository;
         }
 
-        public async Task<String> AddFriendAsync(string name, string emailId)
+        public async Task<ResponseModel> AddFriendAsync(string name, string userMail)
         {
+            var emailId = userMail;
             var existingUser = await _userManager.FindByEmailAsync(emailId);
             if (!Regex.IsMatch(emailId, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
@@ -49,16 +52,16 @@ namespace EMS.Friends
 
                 // throw new BusinessException("User already exists");
                 var existingFriendship = await _friendRepository.FirstOrDefaultAsync(f =>
-                f.UserId == _currentUser.Id && f.FriendId == existingUser.Id && !f.IsDeleted);
+                f.UserId == new Guid("3a0bc559-4a98-1dfa-317d-c94539d43a69") && f.FriendId == existingUser.Id && !f.IsDeleted);
 
                 if (existingFriendship != null)
                 {
-                    return "Friend exist";
+                    return new ResponseModel { result = "Friend exist" };
                 }
 
                 var friend = new Friend
                 {
-                    UserId = (Guid)_currentUser.Id,
+                    UserId = new Guid("3a0bc559-4a98-1dfa-317d-c94539d43a69"),
                     FriendId = existingUser.Id,
                     IsDeleted = false
                 };
@@ -66,7 +69,7 @@ namespace EMS.Friends
                 await _friendRepository.InsertAsync(friend);
 
 
-                return "Friend added";
+                return new ResponseModel { result = "Friend added" };
             }
             else
             {
@@ -79,17 +82,18 @@ namespace EMS.Friends
                     //var currentUser = await _currentUser.Id();
                     var friend = new Friend
                     {
-                        UserId = (Guid)_currentUser.Id,
-                        FriendId = user.Id,
+                        UserId = new Guid("3a0bc559-4a98-1dfa-317d-c94539d43a69"),
+                    FriendId = user.Id,
                         IsDeleted = false
                     };
                     await _friendRepository.InsertAsync(friend);
                   
-                    return "Friend invited";
+                    return new ResponseModel { result = "Friend invited" };
                 }
                 
                 throw new ApplicationException($"Could not add user: {resultUser.Errors.FirstOrDefault()?.Description}");
             }
+
         }
 
         private async Task SendEmailAsync(string targetEmail)

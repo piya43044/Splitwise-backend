@@ -16,7 +16,7 @@ using Volo.Abp.ObjectMapping;
 using Volo.Abp.Users;
 
 namespace EMS.Groups;
-[Authorize]
+//[Authorize]
 public class GroupAppService : EMSAppService, IGroupAppService
 {
     private readonly IGroupRepository _groupRepository;

@@ -11,6 +11,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.Users;
 using EMS.Expenses;
 using EMS.Groups;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EMS.Payments
 {
@@ -32,7 +33,8 @@ namespace EMS.Payments
         {
             List<PaymentReturnDto> paymentReturns = new List<PaymentReturnDto>();
 
-            var currentUserId = _currentUser.Id;
+           // var currentUserId = _currentUser.Id;
+            var currentUserId = new Guid("3a0bc559-4a98-1dfa-317d-c94539d43a69");
 
             var payments = await _paymentRepository.GetListAsync(p => p.OwnedBy == currentUserId && p.IsSettled == false);
 
@@ -58,7 +60,7 @@ namespace EMS.Payments
                 PaymentReturnDto paymentReturn = new PaymentReturnDto();
                 paymentReturn.Amount = payment.Amount;
                 paymentReturn.GroupName = groupDict[expenseDict[payment.ExpenseId].groupId].Name;
-                paymentReturn.WhomeToGive = expenseDict[payment.ExpenseId].groupId;
+                paymentReturn.WhomeToGive = expenseDict[payment.ExpenseId].paidBy;
                 paymentReturn.Message = "You owes from";
                 paymentReturns.Add(paymentReturn);
             }
@@ -68,7 +70,8 @@ namespace EMS.Payments
         public async Task<List<PaymentYouGetDto>> GetWhoWillGiveToCurrentUserAsync()
         {
             List<PaymentYouGetDto> paymentYouGetReturns = new List<PaymentYouGetDto>();
-            var currentUserId = _currentUser.Id;
+            //var currentUserId = _currentUser.Id;
+            var currentUserId = new Guid("3a0bc559-4a98-1dfa-317d-c94539d43a69");
 
             var expenses = await _expenseRepository.GetListAsync(p => p.paidBy == currentUserId);
             var expenseIds = expenses.Select(p => p.Id).Distinct().ToList();

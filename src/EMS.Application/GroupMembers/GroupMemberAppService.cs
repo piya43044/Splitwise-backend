@@ -10,7 +10,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace EMS.GroupMembers;
 
-[Authorize]
+//[Authorize]
 public class GroupMemberAppService : EMSAppService, IGroupMemberAppService
 {
     private readonly IGroupMemberRepository _groupMemberRepository;

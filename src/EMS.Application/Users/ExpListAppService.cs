@@ -29,10 +29,11 @@ namespace EMS.Users
             {
                 var expDto = new ExpenseDto
                 {
+                    Id = expense.Id,
                     paidBy = expense.paidBy,
                     expense_amount = expense.expense_amount,
                     groupId = expense.groupId
-                    
+
                 };
                 expenseDto.Add(expDto);
 
@@ -45,7 +46,7 @@ namespace EMS.Users
             var payments = await _paymentRepository.GetListAsync(p => p.IsSettled == false);
             var expenseList = new List<ExpListGetDto>();
 
-            if(payments.Count == 0)
+            if (payments.Count == 0)
             {
                 ExpListGetDto expListGetDtos = new ExpListGetDto();
                 expListGetDtos.Message = "You do not have any expenses yet";
@@ -57,6 +58,7 @@ namespace EMS.Users
             {
                 var expListGetDto = new ExpListGetDto
                 {
+                    ExpenseId = payment.ExpenseId,
                     PaymentId = payment.Id,
                     OwnedBy = payment.OwnedBy,
                     Amount = payment.Amount,
