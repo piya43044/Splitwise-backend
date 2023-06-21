@@ -11,7 +11,6 @@ using Volo.Abp.Identity;
 using Volo.Abp.Users;
 using EMS.Expenses;
 using EMS.Groups;
-using Microsoft.AspNetCore.Authorization;
 
 namespace EMS.Payments
 {
@@ -47,10 +46,10 @@ namespace EMS.Payments
             }
 
             var expenseIds = payments.Select(p => p.ExpenseId).Distinct().ToList();
-            var expenses = await _expenseRepository.GetListAsync(e => expenseIds.Contains(e.Id));
+            var expenses = await _expenseRepository.GetListAsync(e => expenseIds.Contains(e.Id) && e.IsDeleted ==false);
 
             var groupIds = expenses.Select(e => e.groupId).Distinct().ToList();
-            var groups = await _groupRepository.GetListAsync(g => groupIds.Contains(g.Id));
+            var groups = await _groupRepository.GetListAsync(g => groupIds.Contains(g.Id) && g.IsDeleted == false);
 
             var expenseDict = expenses.ToDictionary(e => e.Id);
             var groupDict = groups.ToDictionary(g => g.Id);
